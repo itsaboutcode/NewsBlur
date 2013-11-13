@@ -113,7 +113,8 @@ typedef NS_ENUM(NSInteger, LoginControlSelectionType) {
 	// Release any cached data, images, etc that aren't in use.
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+                                         duration:(NSTimeInterval)duration {
     int signUpX, loginX;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)){
@@ -167,9 +168,11 @@ typedef NS_ENUM(NSInteger, LoginControlSelectionType) {
     } else {
         if(textField == usernameInput) {
             [passwordInput becomeFirstResponder];
-        } else if (textField == passwordInput && [self.loginControl selectedSegmentIndex] == LoginControlSelectionTypeLogin) {
+        } else if (textField == passwordInput &&
+                   [self.loginControl selectedSegmentIndex] == LoginControlSelectionTypeLogin) {
             [self checkPassword];
-        } else if (textField == passwordInput && [self.loginControl selectedSegmentIndex] == LoginControlSelectionTypeSignup) {
+        } else if (textField == passwordInput &&
+                   [self.loginControl selectedSegmentIndex] == LoginControlSelectionTypeSignup) {
             [emailInput becomeFirstResponder];
         } else if (textField == emailInput) {
             [self registerAccount];
