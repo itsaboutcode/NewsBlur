@@ -6,14 +6,11 @@
 //  Copyright 2010 NewsBlur. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "NewsBlurAppDelegate.h"
-#import "ASIHTTPRequest.h"
 
 #define LANDSCAPE_MARGIN 128
 
-@interface LoginViewController : UIViewController 
-<ASIHTTPRequestDelegate> {
+@interface LoginViewController : UIViewController <ASIHTTPRequestDelegate> {
     NewsBlurAppDelegate *appDelegate;
     
     BOOL isOnSignUpScreen;
@@ -22,7 +19,6 @@
     UITextField *emailInput;
     NSMutableData * jsonString;
     
-    UIActivityIndicatorView *activityIndicator;
     UILabel *authenticatingLabel;
     UILabel *errorLabel;
     UISegmentedControl *loginControl;
