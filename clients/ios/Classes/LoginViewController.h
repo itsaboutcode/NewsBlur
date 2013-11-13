@@ -11,15 +11,14 @@
 #define LANDSCAPE_MARGIN 128
 
 @interface LoginViewController : UIViewController <ASIHTTPRequestDelegate> {
+    
     NewsBlurAppDelegate *appDelegate;
     
     BOOL isOnSignUpScreen;
     UITextField *usernameInput;
     UITextField *passwordInput;
     UITextField *emailInput;
-    NSMutableData * jsonString;
     
-    UILabel *authenticatingLabel;
     UILabel *errorLabel;
     UISegmentedControl *loginControl;
     
@@ -32,8 +31,8 @@
 
 - (void)checkPassword;
 - (void)registerAccount;
-- (IBAction)selectLoginSignup;
 
+- (IBAction)selectLoginSignup;
 - (IBAction)selectSignUp;
 - (IBAction)selectLogin;
 - (IBAction)tapLoginButton;
@@ -42,7 +41,7 @@
 
 - (void)animateLoop;
 
-@property (nonatomic) IBOutlet NewsBlurAppDelegate *appDelegate;
+@property (nonatomic) NewsBlurAppDelegate *appDelegate;
 
 @property (nonatomic) IBOutlet UITextField *usernameInput;
 @property (nonatomic) IBOutlet UITextField *passwordInput;
@@ -55,7 +54,7 @@
 @property (nonatomic) IBOutlet UIView *signUpView;
 @property (nonatomic) IBOutlet UIView *logInView;
 
-@property (nonatomic) NSMutableData * jsonString;
+//@property (nonatomic) NSMutableData * jsonString;
 @property (nonatomic) IBOutlet UILabel *errorLabel;
 @property (nonatomic) IBOutlet UISegmentedControl *loginControl;
 

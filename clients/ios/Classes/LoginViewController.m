@@ -21,7 +21,6 @@
 @synthesize signUpView;
 @synthesize logInView;
 
-@synthesize jsonString;
 @synthesize errorLabel;
 @synthesize loginControl;
 @synthesize usernameLabel;
