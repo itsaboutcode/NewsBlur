@@ -29,6 +29,12 @@
 @synthesize emailLabel;
 @synthesize passwordOptionalLabel;
 
+typedef NS_ENUM(NSInteger, LoginControlSelectionType) {
+    LoginControlSelectionTypeLogin,
+    LoginControlSelectionTypeSignup,
+};
+
+#pragma mark - View LifeCycle Methods
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 	
@@ -45,10 +51,9 @@
     self.emailInput.borderStyle = UITextBorderStyleRoundedRect;
     self.signUpPasswordInput.borderStyle = UITextBorderStyleRoundedRect;
     self.signUpUsernameInput.borderStyle = UITextBorderStyleRoundedRect;
-    [self.loginControl
-     setTitleTextAttributes:@{NSFontAttributeName:
-                                  [UIFont fontWithName:@"Helvetica-Bold" size:11.0f]}
-     forState:UIControlStateNormal];
+    [self.loginControl setTitleTextAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold"
+                                                                                    size:11.0f]}
+                                     forState:UIControlStateNormal];
 
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -95,7 +100,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [MBProgressHUD hideHUDForView:self.view
+                         animated:YES];
     [super viewDidAppear:animated];
 }
 
@@ -142,8 +148,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark Login
+#pragma mark - UITextField Delegate Method
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
@@ -162,107 +167,111 @@
     } else {
         if(textField == usernameInput) {
             [passwordInput becomeFirstResponder];
-        } else if (textField == passwordInput && [self.loginControl selectedSegmentIndex] == 0) {
+        } else if (textField == passwordInput && [self.loginControl selectedSegmentIndex] == LoginControlSelectionTypeLogin) {
             [self checkPassword];
-        } else if (textField == passwordInput && [self.loginControl selectedSegmentIndex] == 1) {
+        } else if (textField == passwordInput && [self.loginControl selectedSegmentIndex] == LoginControlSelectionTypeSignup) {
             [emailInput becomeFirstResponder];
         } else if (textField == emailInput) {
             [self registerAccount];
         }
-
+        
     }
     return YES;
 }
 
+#pragma mark -
+#pragma mark Login and Signup Methods
+
 - (void)checkPassword {
+    
     [self.errorLabel setHidden:YES];
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    MBProgressHUD *HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    [MBProgressHUD hideHUDForView:self.view
+                         animated:YES];
+    MBProgressHUD *HUD = [MBProgressHUD showHUDAddedTo:self.view
+                                              animated:YES];
     HUD.labelText = @"Authenticating";
     
     NSString *urlString = [NSString stringWithFormat:@"%@/api/login",
                            NEWSBLUR_URL];
     NSURL *url = [NSURL URLWithString:urlString];
+    
     [[NSHTTPCookieStorage sharedHTTPCookieStorage]
      setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
+    
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-    [request setPostValue:[usernameInput text] forKey:@"username"]; 
-    [request setPostValue:[passwordInput text] forKey:@"password"]; 
-    [request setPostValue:@"login" forKey:@"submit"]; 
-    [request setPostValue:@"1" forKey:@"api"]; 
+    
+    [request setPostValue:[usernameInput text]
+                   forKey:@"username"];
+    [request setPostValue:[passwordInput text]
+                   forKey:@"password"];
+    [request setPostValue:@"login"
+                   forKey:@"submit"];
+    [request setPostValue:@"1"
+                   forKey:@"api"];
+    
     [request setDelegate:self];
     [request setDidFinishSelector:@selector(requestFinished:)];
     [request setDidFailSelector:@selector(requestFailed:)];
     [request startAsynchronous];
 }
 
-
-- (void)requestFinished:(ASIHTTPRequest *)request {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    NSString *responseString = [request responseString];
-    NSData *responseData=[responseString dataUsingEncoding:NSUTF8StringEncoding];    
-    NSError *error;
-    NSDictionary *results = [NSJSONSerialization 
-                             JSONObjectWithData:responseData
-                             options:kNilOptions 
-                             error:&error];
-    // int statusCode = [request responseStatusCode];
-    int code = [[results valueForKey:@"code"] intValue];
-    if (code == -1) {
-        NSDictionary *errors = [results valueForKey:@"errors"];
-        if ([errors valueForKey:@"username"]) {
-            [self.errorLabel setText:[[errors valueForKey:@"username"] objectAtIndex:0]];   
-        } else if ([errors valueForKey:@"__all__"]) {
-            [self.errorLabel setText:[[errors valueForKey:@"__all__"] objectAtIndex:0]];
-        }
-        [self.errorLabel setHidden:NO];
-    } else {
-        [self.passwordInput setText:@""];
-        [self.signUpPasswordInput setText:@""];
-        [appDelegate reloadFeedsView:YES];
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
-}
-
-
 - (void)registerAccount {
+    
     [MBProgressHUD hideHUDForView:self.view animated:YES];
     MBProgressHUD *HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     HUD.labelText = @"Registering...";
+    
     [self.errorLabel setHidden:YES];
+    
     NSString *urlString = [NSString stringWithFormat:@"%@/api/signup",
                            NEWSBLUR_URL];
     NSURL *url = [NSURL URLWithString:urlString];
+    
     [[NSHTTPCookieStorage sharedHTTPCookieStorage]
      setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
+    
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [request setPostValue:[signUpUsernameInput text] forKey:@"username"]; 
-        [request setPostValue:[signUpPasswordInput text] forKey:@"password"]; 
+        [request setPostValue:[signUpUsernameInput text]
+                       forKey:@"username"];
+        [request setPostValue:[signUpPasswordInput text]
+                       forKey:@"password"];
     } else {
-        [request setPostValue:[usernameInput text] forKey:@"username"]; 
-        [request setPostValue:[passwordInput text] forKey:@"password"]; 
+        [request setPostValue:[usernameInput text]
+                       forKey:@"username"];
+        [request setPostValue:[passwordInput text]
+                       forKey:@"password"];
     }
-    [request setPostValue:[emailInput text] forKey:@"email"]; 
-    [request setPostValue:@"login" forKey:@"submit"]; 
-    [request setPostValue:@"1" forKey:@"api"]; 
+    
+    [request setPostValue:[emailInput text]
+                   forKey:@"email"];
+    [request setPostValue:@"login"
+                   forKey:@"submit"];
+    [request setPostValue:@"1"
+                   forKey:@"api"];
+    
     [request setDelegate:self];
-    [request setDidFinishSelector:@selector(finishRegistering:)];
+    [request setDidFinishSelector:@selector(requestFinished:)];
     [request setDidFailSelector:@selector(requestFailed:)];
     [request startAsynchronous];
 }
 
-- (void)finishRegistering:(ASIHTTPRequest *)request {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+#pragma mark - ASIHTTPRequest response methods
+
+- (void)requestFinished:(ASIHTTPRequest *)request {
+    
+    [MBProgressHUD hideHUDForView:self.view
+                         animated:YES];
+    
     NSString *responseString = [request responseString];
-    NSData *responseData=[responseString dataUsingEncoding:NSUTF8StringEncoding];    
+    NSData *responseData=[responseString dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
-    NSDictionary *results = [NSJSONSerialization 
+    NSDictionary *results = [NSJSONSerialization
                              JSONObjectWithData:responseData
-                             options:kNilOptions 
+                             options:kNilOptions
                              error:&error];
-    // int statusCode = [request responseStatusCode];
     
     int code = [[results valueForKey:@"code"] intValue];
     if (code == -1) {
@@ -274,21 +283,21 @@
         } else if ([errors valueForKey:@"__all__"]) {
             [self.errorLabel setText:[[errors valueForKey:@"__all__"] objectAtIndex:0]];
         }
-
         [self.errorLabel setHidden:NO];
     } else {
         [self.passwordInput setText:@""];
         [self.signUpPasswordInput setText:@""];
-//        [appDelegate showFirstTimeUser];
         [appDelegate reloadFeedsView:YES];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES
+                                 completion:nil];
     }
     
 }
 
 - (void)requestFailed:(ASIHTTPRequest *)request {
+    
     NSError *error = [request error];
-    NSLog(@"Error: %@", error);
+    DLog(@"Error: %@", error);
     [appDelegate informError:error];
 }
 
@@ -336,17 +345,6 @@
     [self.usernameInput becomeFirstResponder];
 }
 
-- (IBAction)tapLoginButton {
-    [self.view endEditing:YES];
-    [self checkPassword];
-    
-}
-
-- (IBAction)tapSignUpButton {
-    [self.view endEditing:YES];
-    [self registerAccount];
-}
-
 #pragma mark -
 #pragma mark iPhone: Sign Up/Login Toggle
 
@@ -355,7 +353,7 @@
 }
 
 - (void)animateLoop {
-    if ([self.loginControl selectedSegmentIndex] == 0) {
+    if ([self.loginControl selectedSegmentIndex] == LoginControlSelectionTypeLogin) {
         [UIView animateWithDuration:0.5 animations:^{
             // Login
             usernameInput.frame = CGRectMake(20, 67, 280, 31); 
@@ -393,6 +391,20 @@
         [usernameInput resignFirstResponder];
         [usernameInput becomeFirstResponder];
     }
+}
+
+#pragma mark -
+#pragma mark iOS: Sign Up/Login Button Pressed Actions
+
+- (IBAction)tapLoginButton {
+    [self.view endEditing:YES];
+    [self checkPassword];
+    
+}
+
+- (IBAction)tapSignUpButton {
+    [self.view endEditing:YES];
+    [self registerAccount];
 }
 
 @end

@@ -54,7 +54,6 @@
 @property (nonatomic) IBOutlet UIView *signUpView;
 @property (nonatomic) IBOutlet UIView *logInView;
 
-//@property (nonatomic) NSMutableData * jsonString;
 @property (nonatomic) IBOutlet UILabel *errorLabel;
 @property (nonatomic) IBOutlet UISegmentedControl *loginControl;
 
