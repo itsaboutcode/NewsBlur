@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController">
             <connections>
-                <outlet property="activityIndicator" destination="25" id="27"/>
                 <outlet property="authenticatingLabel" destination="24" id="28"/>
                 <outlet property="emailInput" destination="45" id="49"/>
                 <outlet property="emailLabel" destination="46" id="50"/>
@@ -55,10 +54,6 @@
                     <nil key="highlightedColor"/>
                     <color key="shadowColor" cocoaTouchSystemColor="darkTextColor"/>
                 </label>
-                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="white" id="25">
-                    <rect key="frame" x="71" y="284" width="20" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </activityIndicatorView>
                 <scrollView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" id="31" userLabel="Scroll View">
                     <rect key="frame" x="0.0" y="86" width="320" height="180"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
